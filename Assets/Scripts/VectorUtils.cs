@@ -34,7 +34,7 @@ namespace Geometry
             return Area2(a, b, c) == 0;
         }
 
-        public static bool IsPointOnLine(Vector2 a, Vector2 b, Vector2 p)
+        public static bool IsBetween(Vector2 a, Vector2 b, Vector2 p)
         {
             float minX, maxX, minY, maxY;
             MinMax(a.x, b.x, out minX, out maxX);
@@ -46,7 +46,7 @@ namespace Geometry
         {
             if (IsCollinear(a, b, c))
             {
-                return IsPointOnLine(a, b, c);
+                return IsBetween(a, b, c);
             }
 
             return (IsLeft(a, b, c) != IsLeft(a, b, d)) && (IsLeft(c, d, a) != IsLeft(c, d, b));

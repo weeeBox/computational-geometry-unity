@@ -117,5 +117,50 @@ namespace Tests
             var c = new Vector2(4, 3);
             Assert.IsTrue(VectorUtils.IsLeftOn(a, b, c));
         }
+
+        [Test]
+        public void IsCollinear1()
+        {
+            var a = new Vector2(2, 1);
+            var b = new Vector2(4, 2);
+            var c = new Vector2(6, 3);
+            Assert.IsTrue(VectorUtils.IsCollinear(a, b, c));
+        }
+
+        [Test]
+        public void IsCollinear2()
+        {
+            var a = new Vector2(2, 1);
+            var b = new Vector2(4, 2);
+            var c = new Vector2(5, 3);
+            Assert.IsFalse(VectorUtils.IsCollinear(a, b, c));
+        }
+
+        [Test]
+        public void IsBetween1()
+        {
+            var a = new Vector2(2, 1);
+            var b = new Vector2(6, 3);
+            var c = new Vector2(4, 2);
+            Assert.IsTrue(VectorUtils.IsBetween(a, b, c));
+        }
+
+        [Test]
+        public void IsBetween2()
+        {
+            var a = new Vector2(4, 2);
+            var b = new Vector2(6, 3);
+            var c = new Vector2(2, 1);
+            Assert.IsFalse(VectorUtils.IsBetween(a, b, c));
+        }
+
+        [Test]
+        public void IsBetween3()
+        {
+            var a = new Vector2(2, 1);
+            var b = new Vector2(4, 2);
+            var c = new Vector2(6, 3);
+            Assert.IsFalse(VectorUtils.IsBetween(a, b, c));
+        }
     }
 }
