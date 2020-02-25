@@ -44,12 +44,20 @@ namespace Geometry
 
         public static bool Intersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
         {
-            if (IsCollinear(a, b, c))
+            var abc = Area2(a, b, c);
+            var abd = Area2(a, b, d);
+            var cda = Area2(c, d, a);
+            var cdb = Area2(c, d, b);
+            if (abc != 0 &&
+                abd != 0 &&
+                cda != 0 &&
+                cdb != 0)
             {
-                return IsBetween(a, b, c);
+                return ((abc > 0) ^ (abd > 0)) && ((cda > 0) ^ (cdb > 0));
             }
 
-            return (IsLeft(a, b, c) != IsLeft(a, b, d)) && (IsLeft(c, d, a) != IsLeft(c, d, b));
+            return !(!IsBetween(a, b, c) && !IsBetween(a, b, d) &&
+                     !IsBetween(c, d, a) && !IsBetween(c, d, b));
         }
     }
 }

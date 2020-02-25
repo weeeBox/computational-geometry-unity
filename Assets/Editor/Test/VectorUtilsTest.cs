@@ -162,5 +162,75 @@ namespace Tests
             var c = new Vector2(6, 3);
             Assert.IsFalse(VectorUtils.IsBetween(a, b, c));
         }
+
+        [Test]
+        public void Intersect1()
+        {
+            TestIntersect("0 0 5 5 0 6 6 0", true);
+        }
+
+        [Test]
+        public void Intersect2()
+        {
+            TestIntersect("0 0 3 3 0 6 6 0", true);
+        }
+
+        [Test]
+        public void Intersect3()
+        {
+            TestIntersect("5 5 3 3 0 6 6 0", true);
+        }
+
+        [Test]
+        public void Intersect4()
+        {
+            TestIntersect("1 1 1 3 1 3 1 6", true);
+        }
+
+        [Test]
+        public void Intersect5()
+        {
+            TestIntersect("1 1 1 4 1 3 1 6", true);
+        }
+
+        [Test]
+        public void Intersect6()
+        {
+            TestIntersect("1 1 1 6 1 2 1 4", true);
+        }
+
+        [Test]
+        public void Intersect7()
+        {
+            TestIntersect("1 1 1 6 1 1 1 6", true);
+        }
+
+
+
+        [Test]
+        public void Intersect8()
+        {
+            TestIntersect("1 1 1 3 1 4 1 6", false);
+        }
+
+
+
+        private void TestIntersect(string points, bool expected)
+        {
+            string[] tokens = points.Split();
+            Assert.AreEqual(8, tokens.Length);
+            var a = new Vector2(int.Parse(tokens[0]), int.Parse(tokens[1]));
+            var b = new Vector2(int.Parse(tokens[2]), int.Parse(tokens[3]));
+            var c = new Vector2(int.Parse(tokens[4]), int.Parse(tokens[5]));
+            var d = new Vector2(int.Parse(tokens[6]), int.Parse(tokens[7]));
+            Assert.AreEqual(expected, VectorUtils.Intersect(a, b, c, d));
+            Assert.AreEqual(expected, VectorUtils.Intersect(a, b, d, c));
+            Assert.AreEqual(expected, VectorUtils.Intersect(b, a, c, d));
+            Assert.AreEqual(expected, VectorUtils.Intersect(b, a, d, c));
+            Assert.AreEqual(expected, VectorUtils.Intersect(c, d, a, b));
+            Assert.AreEqual(expected, VectorUtils.Intersect(c, d, b, a));
+            Assert.AreEqual(expected, VectorUtils.Intersect(d, c, a, b));
+            Assert.AreEqual(expected, VectorUtils.Intersect(d, c, b, a));
+        }
     }
 }
