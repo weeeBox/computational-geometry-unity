@@ -2,6 +2,7 @@
 using UnityEngine;
 
 using Geometry;
+using System.Linq;
 
 namespace Tests
 {
@@ -205,19 +206,134 @@ namespace Tests
             TestIntersect("1 1 1 6 1 1 1 6", true);
         }
 
-
-
         [Test]
         public void Intersect8()
         {
             TestIntersect("1 1 1 3 1 4 1 6", false);
         }
 
+        [Test]
+        public void Intersect9()
+        {
+            TestIntersect("1 1 2 1 3 1 4 1", false);
+        }
 
+        [Test]
+        public void Intersect10()
+        {
+            TestIntersect("1 1 3 1 2 1 4 1", true);
+        }
+
+        [Test]
+        public void Intersect11()
+        {
+            TestIntersect("1 1 4 1 1 1 2 1", true);
+        }
+
+        [Test]
+        public void Intersect12()
+        {
+            TestIntersect("1 1 2 1 2 1 3 1", true);
+        }
+
+        [Test]
+        public void Intersect13()
+        {
+            TestIntersect("1 1 2 1 2 1 3 1", true);
+        }
+
+        [Test]
+        public void Intersect14()
+        {
+            TestIntersect("4 1 6 4 8 7 10 10", false);
+        }
+
+        [Test]
+        public void Intersect15()
+        {
+            TestIntersect("4 1 6 4 8 7 10 10", false);
+        }
+
+        [Test]
+        public void Intersect16()
+        {
+            TestIntersect("4 1 8 7 6 4 10 10", true);
+        }
+
+        [Test]
+        public void Intersect17()
+        {
+            TestIntersect("4 1 10 10 6 4 8 7", true);
+        }
+
+        [Test]
+        public void Intersect18()
+        {
+            TestIntersect("4 1 10 10 6 4 8 7", true);
+        }
+
+        [Test]
+        public void Intersect19()
+        {
+            TestIntersect("4 1 6 4 6 4 10 10", true);
+        }
+
+        [Test]
+        public void Intersect20()
+        {
+            TestIntersect("5 5 0 6 0 6 6 0", true);
+        }
+
+        [Test]
+        public void Intersect21()
+        {
+            TestIntersect("5 5 6 0 0 6 6 0", true);
+        }
+
+        [Test]
+        public void Intersect22()
+        {
+            TestIntersect("5 5 6 0 0 6 5 0", false);
+        }
+
+        [Test]
+        public void Intersect23()
+        {
+            TestIntersect("5 5 6 0 6 5 7 0", false);
+        }
+
+        [Test]
+        public void Intersect24()
+        {
+            TestIntersect("5 5 6 0 6 5 6 1", false);
+        }
+
+        [Test]
+        public void Intersect25()
+        {
+            TestIntersect("5 5 4 5 6 5 6 1", false);
+        }
+
+        [Test]
+        public void Intersect26()
+        {
+            TestIntersect("5 5 7 0 6 5 7 5", false);
+        }
+
+        [Test]
+        public void Intersect27()
+        {
+            TestIntersect("5 5 5 0 6 5 7 5", false);
+        }
 
         private void TestIntersect(string points, bool expected)
         {
             string[] tokens = points.Split();
+            var first = string.Join(" ", tokens.Take(tokens.Length / 2));
+            var second = string.Join(" ", tokens.Skip(tokens.Length / 2));
+            Debug.LogFormat("fig = figure()\nplot_line(fig, '{0}', color = 'r')\nplot_line(fig, '{1}', color = 'b')\n\n", first, second);
+
+            
             Assert.AreEqual(8, tokens.Length);
             var a = new Vector2(int.Parse(tokens[0]), int.Parse(tokens[1]));
             var b = new Vector2(int.Parse(tokens[2]), int.Parse(tokens[3]));

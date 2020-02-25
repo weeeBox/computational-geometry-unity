@@ -56,8 +56,10 @@ namespace Geometry
                 return ((abc > 0) ^ (abd > 0)) && ((cda > 0) ^ (cdb > 0));
             }
 
-            return !(!IsBetween(a, b, c) && !IsBetween(a, b, d) &&
-                     !IsBetween(c, d, a) && !IsBetween(c, d, b));
+            return abc == 0 && IsBetween(a, b, c) ||
+                   abd == 0 && IsBetween(a, b, d) ||
+                   cda == 0 && IsBetween(c, d, a) ||
+                   cdb == 0 && IsBetween(c, d, b);
         }
     }
 }
