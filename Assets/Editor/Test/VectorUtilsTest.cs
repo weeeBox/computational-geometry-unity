@@ -326,6 +326,12 @@ namespace Tests
             TestIntersect("5 5 5 0 6 5 7 5", false);
         }
 
+        [Test]
+        public void Intersect28()
+        {
+            TestIntersect("5 5 5 0 6 5 7 5", false);
+        }
+
         private void TestIntersect(string points, bool expected)
         {
             string[] tokens = points.Split();
