@@ -5,40 +5,22 @@ using UnityEngine;
 
 public class PlaneSweep
 {
-    private static readonly IComparer<Segment> comparer = Comparer<Segment>.Create((s1, s2) => {
-        var p1 = s1.upperEndpoint;
-        var p2 = s2.upperEndpoint;
-        int cmp = p2.y.CompareTo(p2.y);
-        if (cmp != 0)
-        {
-            return cmp;
-        }
-
-        return p1.x.CompareTo(p2.x);
-    });
-
     public readonly IEnumerable<Intersection> intersections;
 
     public PlaneSweep(IEnumerable<Segment> segments)
     {
-        var eventPoints = new List<EventPoint>();
-        foreach (var s in segments)
-        {
-            eventPoints.Add(EventPoint.Start(s));
-            eventPoints.Add(EventPoint.End(s));
-        }
-        PriorityQueue<EventPoint> eventQueue = new PriorityQueue<EventPoint>(eventPoints);
+        var eventQueue = new EventQueue(segments);
         intersections = GetIntersections(eventQueue);
     }
 
-    private static IEnumerable<Intersection> GetIntersections(PriorityQueue<EventPoint> eventQueue)
+    private static IEnumerable<Intersection> GetIntersections(IEventQueue eventQueue)
     {
         var status = new Status();
 
         List<Intersection> intersections = new List<Intersection>();
         while (eventQueue.Count > 0)
         {
-            var eventPoint = eventQueue.Poll();
+            var eventPoint = eventQueue.Pop();
             switch (eventPoint.type)
             {
                 case EventPoint.EP_START:
@@ -69,14 +51,24 @@ public class Segment
         this.b = b;
     }
 
-    public Vector3 upperEndpoint
+    public float minX
     {
-        get { return a.y > b.y ? a : b; }
+        get { return Mathf.Min(a.x, b.x); }
     }
 
-    public Vector3 lowerEndpoint
+    public float maxX
     {
-        get { return a.y < b.y ? a : b; }
+        get { return Mathf.Max(a.x, b.x); }
+    }
+
+    public float minY
+    {
+        get { return Mathf.Min(a.y, b.y); }
+    }
+
+    public float maxY
+    {
+        get { return Mathf.Max(a.y, b.y); }
     }
 }
 
@@ -90,14 +82,6 @@ public class Intersection
         this.coordinates = coordinates;
         this.segments = new List<Segment>(segments);
     }
-}
-
-/// <summary>
-/// Ordered sequence (from left to right) of segments intersecting the sweep line.
-/// </summary>
-class Status
-{
-    private readonly SortedSet<Segment> segments = new SortedSet<Segment>();
 }
 
 struct EventPoint
@@ -131,44 +115,76 @@ struct EventPoint
     }
 }
 
-class EventQueue
+interface IEventQueue
 {
-    /// <summary>
-    /// IComparer implementation for the priority queue.
-    /// Segments are sorted ascendingly by y-coordinate and descendingly by x-coordinate.
-    /// </summary>
-    private static readonly IComparer<Segment> comparer = Comparer<Segment>.Create((s1, s2) =>
-    {
-        Vector3 p1 = s1.upperEndpoint;
-        Vector3 p2 = s2.upperEndpoint;
+    void Push(EventPoint point);
+    EventPoint Pop();
+    int Count { get; }    
+}
 
-        // desc by y-coordinate
-        int cmp = p2.y.CompareTo(p1.y);
+class EventQueue : IEventQueue
+{
+    private static readonly IComparer<EventPoint> comparer = Comparer<EventPoint>.Create((p1, p2) =>
+    {
+        var s1 = p1.segment;
+        var s2 = p2.segment;
+
+        // asc by x-coordinate
+        var cmp = s1.minX.CompareTo(s2.minX);
         if (cmp != 0)
         {
             return cmp;
         }
 
-        // asc by x-coordinate
-        return p1.x.CompareTo(p2.x);
+        // asc by y-coordinate
+        return s1.minY.CompareTo(s2.minY);
     });
 
-    private readonly SortedSet<Segment> queue;
+    private readonly SortedSet<EventPoint> queue;
 
     public EventQueue(IEnumerable<Segment> segments)
     {
-        queue = new SortedSet<Segment>(segments, comparer);
+        var points = CreateEventPoints(segments);
+        queue = new SortedSet<EventPoint>(points, comparer);
     }
 
-    public bool HasNext()
+    public void Push(EventPoint point)
     {
-        return queue.Count > 0;
+        queue.Add(point);
     }
 
-    public Segment Next()
+    public EventPoint Pop()
     {
-        Segment segment = queue.Min;
-        queue.Remove(segment);
-        return segment;
+        var point = queue.Min;
+        queue.Remove(point);
+        return point;
     }
+
+    public int Count { get { return queue.Count; } }
+
+    private IEnumerable<EventPoint> CreateEventPoints(IEnumerable<Segment> segments)
+    {
+        List<EventPoint> points = new List<EventPoint>();
+        foreach (var s in segments)
+        {
+            points.Add(EventPoint.Start(s));
+            points.Add(EventPoint.End(s));
+        }
+
+        return points;
+    }
+}
+
+/// <summary>
+/// Ordered sequence (from bottom to top) of segments intersecting the sweep line.
+/// </summary>
+
+interface IStatus
+{
+
+}
+
+class Status : IStatus
+{
+
 }
